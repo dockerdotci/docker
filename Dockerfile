@@ -38,6 +38,15 @@ ENV JENKINS_SHA 537d910f541c25a23499b222ccd37ca25e074a0c
 RUN curl -fL http://mirrors.jenkins-ci.org/war-stable/$JENKINS_VERSION/jenkins.war -o /usr/share/jenkins/jenkins.war \
   && echo "$JENKINS_SHA /usr/share/jenkins/jenkins.war" | sha1sum -c -
 
+# Jenkins is ran with user `jenkins`, uid = 1000
+# If you bind mount a volume from host/volume from a data container,
+# ensure you use same uid
+RUN useradd -d "$JENKINS_HOME" -u $JENKINS_UID -m -s /bin/bash $JENKINS_USER
+
+# Jenkins home directoy is a volume, so configuration and build history
+# can be persisted and survive image upgrades
+VOLUME $JENKINS_HOME
+
 ENV JENKINS_UC https://updates.jenkins-ci.org
 RUN chown -R $JENKINS_USER "$JENKINS_HOME" /usr/share/jenkins/ref
 
