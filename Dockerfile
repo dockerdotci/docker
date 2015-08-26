@@ -1,5 +1,8 @@
 FROM docker.groupondev.com/centos7/java:8u60
 
+COPY mongodb.repo /etc/yum.repos.d/mongodb.repo
+RUN yum install -y mongodb-org-shell && yum clean all
+
 # `/usr/share/jenkins/ref/` contains all reference configuration we want
 # to set on a fresh new installation. Use it to bundle additional plugins
 # or config file with your custom jenkins Docker image.
@@ -21,11 +24,11 @@ RUN curl -fL http://mirrors.jenkins-ci.org/war-stable/$JENKINS_VERSION/jenkins.w
 
 ENV JENKINS_UC https://updates.jenkins-ci.org
 ENV JENKINS_HOME /var/jenkins_home
-ENV JENKINS_SLAVE_AGENT_PORT 50000
+ENV JENKINS_SLAVE_AGENT_PORT 45734
 ENV JENKINS_USER jenkins
-ENV JENKINS_UID 1000
+ENV JENKINS_UID 843
 
-# Jenkins is ran with user `jenkins`, uid = 1000
+# Jenkins is ran with user `jenkins`, uid = 843
 # If you bind mount a volume from host/volume from a data container,
 # ensure you use same uid
 RUN useradd -d "$JENKINS_HOME" -u $JENKINS_UID -m -s /bin/bash $JENKINS_USER
