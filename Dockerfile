@@ -1,6 +1,4 @@
-FROM java:8-jdk
-
-RUN apt-get update && apt-get install -y wget git curl zip && rm -rf /var/lib/apt/lists/*
+FROM docker.groupondev.com/centos7/java:8u60
 
 # `/usr/share/jenkins/ref/` contains all reference configuration we want
 # to set on a fresh new installation. Use it to bundle additional plugins
