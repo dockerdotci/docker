@@ -14,8 +14,8 @@ ENV TINI_SHA 066ad710107dc7ee05d3aa6e4974f01dc98f3888
 RUN curl -fL https://github.com/krallin/tini/releases/download/v0.5.0/tini-static -o /bin/tini && chmod +x /bin/tini \
   && echo "$TINI_SHA /bin/tini" | sha1sum -c -
 
-ENV JENKINS_VERSION 1.627
-ENV JENKINS_SHA debf542bf33263cc2294a615517f065377a9d4f6
+ENV JENKINS_VERSION 1.628
+ENV JENKINS_SHA 07d1b90ee61c438f4082a0473470f56f22b6142b
 
 # could use ADD but this one does not check Last-Modified header
 # see https://github.com/docker/docker/issues/8331
