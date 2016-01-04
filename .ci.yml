@@ -1,26 +1,8 @@
-environment:
-  language: java
-  vars:
-    DOCKER_REGISTRY: 'docker'
-    DOCKER_IMAGE: '<% out<< JOB_NAME.toLowerCase().replaceAll('-','_') %>'
-    DOCKER_TAG: '<% if (DOTCI_TAG) { out<< DOTCI_TAG.replaceAll(/[^A-Za-z0-9._]/,"").toLowerCase() } else { %>latest<% } %>'
+<% if ( DOTCI_PULL_REQUEST ) { %>
+skip: true
+<% } %>
 
-build:
-  <% if ( DOTCI_PULL_REQUEST ) { %>
-  skip: true
-  <% } %>
-  info:
-    - docker --version
-  before:
-    - 'for file in `find . -type f -not -path "./.git/*"`; do touch -d "\$(git rev-list -n 1 HEAD \$file | xargs git show -s --format=%ai)" \$file; done'
-  run:
-    # Insure latest image dependencies are downloaded to avoid out-of-date local cache
-    - find . -type f -name Dockerfile -exec grep "^FROM " {} \\; | sort | uniq | awk '{system("docker pull " \$2)}'
+before_run: 'for file in `find . -type f -not -path "./.git/*"`; do touch -d "\$(git rev-list -n 1 HEAD \$file | xargs git show -s --format=%ai)" \$file; done'
 
-    <% if ( DOTCI_TAG =~ /v?[0-9]+\.[0-9]+.*/ ) { %>
-    - docker build -t ${DOCKER_REGISTRY}/${DOCKER_IMAGE}:${DOCKER_TAG} .
-    - docker push     ${DOCKER_REGISTRY}/${DOCKER_IMAGE}:${DOCKER_TAG}
-
-    - docker tag   -f ${DOCKER_REGISTRY}/${DOCKER_IMAGE}:${DOCKER_TAG} ${DOCKER_REGISTRY}/${DOCKER_IMAGE}:latest
-    - docker push     ${DOCKER_REGISTRY}/${DOCKER_IMAGE}:latest
-    <% } %>
+run:
+  master: '--daemon && sleep 180 && docker-compose ps'
