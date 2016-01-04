@@ -6,3 +6,5 @@ before_run: 'for file in `find . -type f -not -path "./.git/*"`; do touch -d "\$
 
 run:
   master: '--daemon && sleep 180 && docker-compose ps'
+
+after_each: 'docker rm -vf <% out<< JOB_NAME.toLowerCase().replaceAll('[^0-9a-z]','') %><% out<< BUILD_NUMBER %>_master_run_1'
