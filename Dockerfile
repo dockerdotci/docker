@@ -33,14 +33,7 @@ RUN wget -O /bin/tini https://github.com/krallin/tini/releases/download/v0.5.0/t
 
 COPY init.groovy /usr/share/jenkins/ref/init.groovy.d/tcp-slave-agent-port.groovy
 
-ENV JENKINS_VERSION 1.656
-ENV JENKINS_SHA 44db745d1d02855ac97fc7a31915d2cd1b2e0483
-
-
-# could use ADD but this one does not check Last-Modified header
-# see https://github.com/docker/docker/issues/8331
-RUN wget http://mirrors.jenkins-ci.org/war/$JENKINS_VERSION/jenkins.war -O /usr/share/jenkins/jenkins.war \
-  && echo -e "$JENKINS_SHA  /usr/share/jenkins/jenkins.war" | sha1sum -c -
+RUN mkdir -p /usr/share/jenkins && wget -O /usr/share/jenkins/jenkins.war http://mirrors.jenkins.io/war-stable/latest/jenkins.war
 
 ENV JENKINS_UC https://updates.jenkins-ci.org
 RUN chown -R $JENKINS_USER "$JENKINS_HOME" /usr/share/jenkins/ref
